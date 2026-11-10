@@ -1,0 +1,6 @@
+phiX174      NC_001422.1  length    5386 contigs    2 longest    3604 fraction   99.54% identity 100.0000% junk 0
+hepatitis_B  NC_003977.2  length    3182 contigs    1 longest    3124 fraction   98.18% identity 100.0000% junk 0
+HIV-1        NC_001802.1  length    9181 contigs    9 longest    2499 fraction   98.38% identity  99.1198% junk 0
+dengue_2     NC_001474.2  length   10723 contigs    6 longest    7376 fraction   99.22% identity 100.0000% junk 0
+ebola        NC_002549.1  length   18959 contigs   10 longest    6816 fraction   99.87% identity 100.0000% junk 1
+mpox         NC_063383.1  length  197209 contigs   92 longest   17292 fraction   96.68% identity  99.8624% junk 14

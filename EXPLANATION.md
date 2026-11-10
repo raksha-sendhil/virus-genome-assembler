@@ -19,9 +19,10 @@ and **real** SARS-CoV-2 sequencing data.
 7. [How we judge the result (metrics)](#7-how-we-judge-the-result-metrics)
 8. [Experiments on simulated data](#8-experiments-on-simulated-data)
 9. [Testing on real sequencing data](#9-testing-on-real-sequencing-data)
-10. [Speed (complexity)](#10-speed-complexity)
-11. [Simplifications and next steps](#11-simplifications-and-next-steps)
-12. [Glossary](#12-glossary)
+10. [Other viruses](#10-other-viruses)
+11. [Speed (complexity)](#11-speed-complexity)
+12. [Simplifications and next steps](#12-simplifications-and-next-steps)
+13. [Glossary](#13-glossary)
 
 ---
 
@@ -47,6 +48,58 @@ gcc -O2 -o assembler assembler.c
 
 `gcc -O2` means "compile with optimisations", which makes it run several times
 faster. `-o assembler` names the program file.
+
+### The demo: `demo.sh` and `get_sample.sh`
+
+For showing the project, two small scripts wrap the program so nobody has to
+type long commands:
+
+```bash
+bash demo.sh                    # pick a real sample, rebuild it, grade it
+bash get_sample.sh ERR4204296   # just download one real sample
+```
+
+**`demo.sh`** runs the main demo in three steps, pausing for Enter between them:
+
+1. **Choose the input.** It lists every sample in `data/real/` (one menu line
+   per `*.consensus.fasta` file) with its lab method and collection date, plus
+   a last option to type in any new sample ID:
+   ```
+   Choose a sample (real SARS-CoV-2 sequencing runs, UK, 2020):
+     1) ERR4204296  capture   2020-03-29 (ready)
+     2) ERR4204399  capture   2020-04-04 (ready)
+     ...
+     10) Download a new sample by ID
+   ```
+   "ready" means the fragments are on disk; otherwise they are downloaded first
+   with `get_sample.sh`.
+2. **Show the input.** It prints how many real fragments the sample has and
+   the first five of them, straight from the machine.
+3. **Rebuild and grade.** It runs the assembler with the sample's official
+   genome as the answer, shows all 7 stages, then prints a short summary
+   (genome recovered, letters correct, number of pieces) and saves the full
+   output to `results/<sample>_vs_consensus.txt`.
+
+It also compiles `assembler.c` if the program is missing or out of date, and
+copies the fragment file into WSL's Linux folder (`~/dsa`) before running,
+because WSL reads the Windows C: drive slowly.
+
+**`get_sample.sh RUN_ID`** fetches one real sample from ENA, the European
+public archive of sequencing data. It asks ENA's web API three things:
+
+| Question to ENA | Used for |
+|---|---|
+| Where are this run's fragment files? | Downloads the two `.fastq.gz` files (one per end of each DNA piece), unzips them and joins them into `data/real/<run>.fastq` |
+| Which patient sample is it, and how was it made? | Saves lab method and date to `data/real/<run>.info` (shown in the demo menu) |
+| Is there an official genome for that sample? | Downloads the COG-UK assembly (or ENA's own consensus if there is none) to `data/real/<run>.consensus.fasta` |
+
+Files that already exist are not downloaded again. One detail it handles: some
+official genome files have a `#` in their name, which has to be written `%23`
+in a web address, or the download is cut off.
+
+The fragment files (60–100 MB each) are not stored in the git repository. On a
+fresh copy of the project, `demo.sh` downloads them automatically the first
+time a sample is chosen.
 
 **Tip for real data:** WSL reads files on the Windows C: drive slowly. Copying
 the big `.fastq` files into Linux first makes runs much faster (about 2 s
@@ -1539,6 +1592,9 @@ The machine reads each DNA piece from **both ends**, giving two files (`_1`
 and `_2`). The two ends come from opposite strands, which our mirror handling
 takes care of, so we just put both files together.
 
+These steps are now automated by `get_sample.sh` (section 0), which finds the
+right file addresses for any run ID by itself.
+
 ### 9.3 What's different about real data
 
 | Problem | In real data | How the program handles it |
@@ -1677,19 +1733,118 @@ Some of sample 2's gaps are also missing in the official genome (its `N`
 regions at 19,273 and 22,321). No amplicon there worked at all, so no method
 could recover them.
 
-### 9.7 Verdict
+### 9.7 Seven more samples
 
-- On **capture data** (fairly even coverage), the assembler recovers 99.96% of
-  the genome at 99.86% identity, about as well as on simulated data. Most
-  remaining differences are real subgenomic RNA.
-- On **amplicon data** (very uneven coverage), it's extremely accurate (99.99%)
-  but recovers less (94.4%) with the automatic threshold.
-- On both, it independently finds the same mutations as the official UK
-  pipeline.
+The automatic threshold was designed while looking at the first two samples,
+so it might have been accidentally tuned to just those two. To check, seven
+more early-2020 COG-UK samples were downloaded with `get_sample.sh` and run
+with no changes to the program. None of them had been seen before.
+
+All nine samples, graded against each one's official genome (full outputs in
+`results/<sample>_vs_consensus.txt`):
+
+| Sample | Method | Collected | Fragments | Threshold | Pieces | Genome recovered | Letters correct | Differences | Junk pieces |
+|---|---|---|---|---|---|---|---|---|---|
+| ERR4204296 | capture | 2020-03-29 | 147,184 | 57 | 17 | **99.97%** | 99.87% | 40 | 6 |
+| ERR4204399 ¹ | capture | 2020-04-04 | 167,610 | 63 | 21 | **99.96%** | 99.86% | 42 | 8 |
+| ERR4206536 | capture | 2020-03-29 | 177,574 | 68 | 14 | **99.93%** | 99.94% | 19 | 7 |
+| ERR4205832 | capture | 2020-04-01 | 267,384 | 99 | 71 | 99.10% | 99.77% | 70 | 22 |
+| ERR4205909 | capture | 2020-03-31 | 181,814 | 83 | 97 | 97.74% | 99.77% | 65 | 18 |
+| ERR4206015 | capture | 2020-03-31 | 137,764 | 58 | 94 | 96.77% | 99.81% | 58 | 31 |
+| ERR4240137 | amplicon | 2020-03-21 | 222,628 | 89 | 29 | 98.48% | **100%** | 0 | 1 |
+| ERR4240230 | amplicon | 2020-03-22 | 259,678 | 93 | 14 | 98.25% | 99.99% | 2 | 4 |
+| ERR4239992 ¹ | amplicon | 2020-03-14 | 193,018 | 79 | 39 | 94.40% | 99.99% | 3 | 2 |
+
+¹ the two original samples from 9.1–9.6.
+
+What this shows:
+
+- **The results held up on unseen data.** Three of the six capture samples
+  recover 99.9%+ of the genome, and both new amplicon samples beat the
+  original one (98.25–98.48% vs 94.40%).
+- **Letters correct stays between 99.77% and 100% on every sample.** When the
+  program outputs a letter, it is almost always right.
+- **What varies is completeness and tidiness.** Three samples (ERR4205832,
+  ERR4205909, ERR4206015) come back in 70–97 pieces with 18–31 junk pieces.
+  Two of them also have many unknown `N` letters in their official genomes
+  (ERR4205909: 2,240; ERR4206015: 780; compared with 45 for ERR4204399),
+  which suggests lower-quality samples. They weren't investigated in detail.
+- ERR4205832 has about 18 isolated single-letter differences from its
+  official genome that aren't explained by the subgenomic RNA effect (9.5).
+  They are the least understood result.
+- **Mutations again agree with the official pipeline.** ERR4240137 compared
+  against the Wuhan genome shows 8 differences: 241 C>T, 1420 C>T, 3037 C>T,
+  14408 C>T, 23403 A>G (D614G) and 28881–28883 GGG>AAC (lineage B.1.1).
+  Compared against its own official genome it shows **0** differences, so
+  all 8 are real mutations, found the same way by both.
+
+For the demo, the five samples with the cleanest results are ERR4204296,
+ERR4206536, ERR4204399, ERR4240230 and ERR4240137.
+
+### 9.8 Verdict
+
+- On **capture data** (fairly even coverage), the assembler usually recovers
+  99.9%+ of the genome at about 99.9% identity, about as well as on simulated
+  data. Most remaining differences are real subgenomic RNA. Lower-quality
+  samples come back in more pieces (96.8–99.1% recovered).
+- On **amplicon data** (very uneven coverage), it's extremely accurate
+  (99.99–100%) but recovers less (94.4–98.5%) with the automatic threshold.
+- On every sample checked, it independently finds the same mutations as the
+  official UK pipeline.
 
 ---
 
-## 10. Speed (complexity)
+## 10. Other viruses
+
+Nothing in the program is specific to SARS-CoV-2: no gene names, no lengths,
+no special cases. The only settings are k = 31 and the automatic threshold.
+To check, the genomes of six other viruses were downloaded from NCBI into
+`data/other/` and assembled from simulated fragments (seed 42, default
+settings: 20× coverage, 1% typos, both strands):
+
+```bash
+./assembler data/other/ebola.fasta -seed 42
+```
+
+Results ([results/other_viruses.txt](results/other_viruses.txt)):
+
+| Virus | NCBI accession | Genome length | Pieces | Longest | Genome recovered | Letters correct |
+|---|---|---|---|---|---|---|
+| Phage phiX174 | NC_001422.1 | 5,386 | 2 | 3,604 | 99.54% | 100% |
+| Hepatitis B | NC_003977.2 | 3,182 | **1** | 3,124 | 98.18% | 100% |
+| Dengue virus 2 | NC_001474.2 | 10,723 | 6 | 7,376 | 99.22% | 100% |
+| Ebola | NC_002549.1 | 18,959 | 10 | 6,816 | 99.87% | 100% |
+| HIV-1 | NC_001802.1 | 9,181 | 9 | 2,499 | 98.38% | **99.12%** |
+| Mpox | NC_063383.1 | **197,209** | 92 | 17,292 | 96.68% | 99.86% |
+| *SARS-CoV-2, for comparison* | NC_045512.2 | 29,903 | 21 | 6,672 | 99.94% | 99.997% |
+
+What this shows:
+
+- **Small viruses without repeats work as well as SARS-CoV-2**, with 100% of
+  letters correct.
+- **phiX174 and hepatitis B are circular** in real life: their DNA is a ring.
+  Our simulator cuts them as a straight line, so the two ends are never
+  joined, and the letters at the very ends are covered by few fragments.
+  That's why they're at 98–99.5% even though they're tiny.
+- **HIV-1 is the first to slip (99.12% correct)** because of **repeats**. Its
+  genome has the same stretch of about 600 letters at both ends. Where text
+  appears twice, the graph can't tell which way to go, and some pieces get
+  joined wrongly. This is the same effect as using k = 15 on SARS-CoV-2
+  (section 8).
+- **Mpox is the hardest:** about 7 times bigger than SARS-CoV-2, with
+  repeated regions of several thousand letters at both ends. It comes back
+  in 92 pieces with 14 junk pieces, though 99.86% of letters are still
+  correct.
+
+So the method is general, and its accuracy depends on the genome: the
+longer it is and the more it repeats itself, the harder it gets. These tests
+use simulated fragments only; real runs of these viruses would also need
+their own official genomes to grade against, which `get_sample.sh` only looks
+up for SARS-CoV-2 samples.
+
+---
+
+## 11. Speed (complexity)
 
 **Big-O notation** describes how running time grows with input size. O(n)
 means "doubling the input doubles the time". O(n²) means "doubling the input
@@ -1716,7 +1871,7 @@ about 2 × 10⁷.
 
 ---
 
-## 11. Simplifications and next steps
+## 12. Simplifications and next steps
 
 What the program now handles, and what's still simplified:
 
@@ -1732,11 +1887,12 @@ What the program now handles, and what's still simplified:
 | Adapters and primers | ⚠️ Not trimmed. Lab-added sequences at fragment ends become junk chunks |
 | Subgenomic RNA | ℹ️ Assembled like any other molecule. Real virus pipelines filter by mapping to a reference |
 | Simulated typos | ℹ️ Substitutions only. Real short-read machines mostly make substitutions, so this is realistic for Illumina |
-| One `.c` file, terminal output | ℹ️ By choice. Dashboard to come via the socket server from the C lab project |
+| Repeats longer than k | ⚠️ Can't be resolved; pieces get joined wrongly (HIV-1, mpox, k = 15) |
+| One `.c` file, terminal output | ℹ️ By choice. `demo.sh` drives the demo; a web dashboard could come later via the socket server from the C lab project |
 
 ---
 
-## 12. Glossary
+## 13. Glossary
 
 | Term | Meaning |
 |---|---|
