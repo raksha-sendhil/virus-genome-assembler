@@ -1,0 +1,76 @@
+
+=== Stage 1: Load genome ===
+  File          : data/sars_cov2.fasta
+  Length        : 29903 letters
+  Starts with   : ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT...
+  Time          : 0.002 s
+
+=== Stage 2: Make fragments (simulated sequencing machine) ===
+  Seed          : 42   (rerun with -seed 42 to get these same fragments)
+  Settings      : length 100, coverage 20.0x, typo rate 1.00%
+  Typos added   : 5963
+  Other strand  : 2992 fragments read from the other strand
+  Saved to      : fragments.txt
+  Fragments     : 5980  (lengths 100-100, 0 contain N)
+  Letters       : 598000  (about 20x coverage)
+  Fragment 1    : ACAATACAGATCATGGTTGCTTTGTAGGTTACCTGTAAAACCCCATTGTTGAACATCAAT...
+  Fragment 2    : CATTAATATGACGGGCACTACAGTCAATACAAGCACCAAGGTCACGGGGTGTCATGTTTT...
+  Fragment 3    : CTAGGTGTCTAGCTGTCCACGAGTGCTTTGTTAAGCGTGTTGACTGGACTATTGAATATC...
+  Time          : 0.065 s
+
+=== Stage 3: Cut fragments into 31-letter chunks and count them ===
+  Different chunks : 140570  (a chunk and its mirror count as one)
+  How many chunks were seen N times:
+    N =  1  : 108790
+    N =  2  : 1955
+    N =  3  : 276
+    N =  4  : 566
+    N =  5  : 1087
+    N =  6  : 1846
+    N =  7  : 2480
+    N =  8  : 3122
+    N =  9  : 3599
+    N = 10  : 3651
+    N = 11+ : 13198
+  Time          : 0.091 s
+
+=== Stage 4: Remove chunks seen fewer than 3 times (typos) ===
+  Typical count of a real chunk : 11
+  Threshold     : 3  (automatic: the dip in the histogram, at least a tenth of the typical count)
+  Kept          : 29825
+  Removed       : 110745
+  Time          : 0.005 s
+
+=== Stage 5: Build de Bruijn graph (both strands) ===
+  Nodes (30-letter pieces) : 59686
+  Edges (chunks x 2)       : 59650
+  Start-like nodes (out > in) : 40
+  End-like nodes   (in > out) : 40
+  Branching nodes  (out > 1)  : 2
+  Time          : 0.013 s
+
+=== Stage 6: Walk the graph (Hierholzer) and spell out contigs ===
+  Contigs       : 21  (saved to contigs.fasta)
+  Longest       : 6672 letters
+  Total length  : 30455 letters
+  N50           : 2619
+  Contig 1      : 6672 letters, TACGTATTTGTTTTCGTAGTTGTTCAGACAATGACATGAA...
+  Contig 2      : 3650 letters, ATTACTATGGCAATCAAGCCAGCTATAAAACCTAGCCAAA...
+  Contig 3      : 3258 letters, TGTCCAAGACATGTGATCTGCACCTCTGAAGACATGCTTA...
+  Contig 4      : 2619 letters, GAAGCTATAAGACATGTACGTGCATGGATTGGCTTCGATG...
+  Contig 5      : 2452 letters, TTTTTTTTTTTTTTTTTTTTTTTTTTTGTCATTCTCCTAA...
+  Time          : 0.006 s
+
+=== Stage 7: Compare with the reference genome ===
+  Genome recovered (genome fraction) : 99.94%  (29884 of 29903 letters)
+  Letters matching (identity)        : 99.9967%  (1 differences in 30380 letters)
+  Contigs on the other strand        : 11  (flipped before comparing)
+  Contigs not found in genome        : 2
+  Single-letter differences          : 1 at genome positions:
+    1452:T>G
+  Missing stretch                    : positions 1-17 (17 letters)
+  Missing stretch                    : positions 29902-29903 (2 letters)
+  Time          : 0.322 s
+
+Total time: 0.506 s
+

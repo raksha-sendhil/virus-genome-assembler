@@ -1,0 +1,73 @@
+
+=== Stage 1: Load genome ===
+  File          : data/real/ERR4204296.consensus.fasta
+  Length        : 29903 letters
+  Starts with   : NNNNNNNNNNNNNNCCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT...
+  Time          : 0.004 s
+
+=== Stage 2: Load fragments ===
+  File          : /home/raksha/dsa/ERR4204296.fastq
+  Fragments     : 147184  (lengths 52-151, 199 contain N)
+  Letters       : 21832541  (about 730x coverage)
+  Fragment 1    : GTCAACGACAGTAATTAGTTATTAATTATACTGCGTGAGTGCACTAAGCATGCAGCCGAG...
+  Fragment 2    : CCCGGACGAAACCTAGATGTGCTGATGATCGGCTGCAACACGGACGAAACCGTAAGCAGC...
+  Fragment 3    : CGGGGACAAGGCTCTCCATCTTACCTTTCGGTCACACCCGGACGAAACCTAGATGTGCTG...
+  Time          : 1.724 s
+
+=== Stage 3: Cut fragments into 31-letter chunks and count them ===
+  Different chunks : 1490594  (a chunk and its mirror count as one)
+  How many chunks were seen N times:
+    N =  1  : 1127315
+    N =  2  : 199581
+    N =  3  : 74744
+    N =  4  : 29791
+    N =  5  : 13475
+    N =  6  : 6431
+    N =  7  : 3076
+    N =  8  : 1742
+    N =  9  : 1002
+    N = 10  : 573
+    N = 11+ : 32864
+  Time          : 2.564 s
+
+=== Stage 4: Remove chunks seen fewer than 57 times (typos) ===
+  Typical count of a real chunk : 572
+  Threshold     : 57  (automatic: the dip in the histogram, at least a tenth of the typical count)
+  Kept          : 29863
+  Removed       : 1460731
+  Time          : 0.101 s
+
+=== Stage 5: Build de Bruijn graph (both strands) ===
+  Nodes (30-letter pieces) : 59730
+  Edges (chunks x 2)       : 59726
+  Start-like nodes (out > in) : 30
+  End-like nodes   (in > out) : 30
+  Branching nodes  (out > 1)  : 13
+  Time          : 0.022 s
+
+=== Stage 6: Walk the graph (Hierholzer) and spell out contigs ===
+  Contigs       : 17  (saved to contigs.fasta)
+  Longest       : 9417 letters
+  Total length  : 30373 letters
+  N50           : 7540
+  Contig 1      : 9417 letters, GAGTACTCAATGGTCTTTGTTCTTTTTTTTGTATGAAAAT...
+  Contig 2      : 7540 letters, CTCTTGTAGATCTGTTCTCTAAACGAACTTTAAAATCTGT...
+  Contig 3      : 4892 letters, AGATGCGCAAACAGGTTCATCTAAGTGTGTGTGTTCTGTT...
+  Contig 4      : 3505 letters, GGCATTTTCATACAAAAAAAAAGAACAAAGACCATTGAGT...
+  Contig 5      : 1610 letters, CTCCTAAGAAGCTATTAAAATCACATGGGGATAGCACTAC...
+  Time          : 0.012 s
+
+=== Stage 7: Compare with the reference genome ===
+  Unknown (N) letters in genome      : 47  (not scored)
+  Genome recovered (genome fraction) : 99.97%  (29846 of 29856 letters)
+  Letters matching (identity)        : 99.8674%  (40 differences in 30164 letters)
+  Contigs on the other strand        : 5  (flipped before comparing)
+  Contigs not found in genome        : 6
+  Single-letter differences          : 1 at genome positions:
+    25324:C>A
+  Missing stretch                    : positions 7588-7591 (4 letters)
+  Missing stretch                    : positions 29865-29870 (6 letters)
+  Time          : 1.676 s
+
+Total time: 6.119 s
+

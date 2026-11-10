@@ -1,0 +1,7 @@
+leader anchor (46-75): ATCTCTTGTAGATCTGTTCTCTAAACGAAC
+contig_11 length=81 (-): after the leader comes ATGAAATTTCTTGTTTTCTT
+   genome says          TTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGT
+   contig continues at genome position 27894
+contig_12 length=51 (-): after the leader comes TTATGGATTTGTTTATGAGAA
+   genome says          TTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGT
+   contig continues at genome position 25391

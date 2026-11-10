@@ -1,0 +1,15 @@
+                           thr   3 contigs   21 longest   6672 N50  2619 fraction   99.94% identity  99.9967% diffs    1 junk    2
+-err 0                     thr   2 contigs    1 longest  29885 N50 29885 fraction   99.94% identity 100.0000% diffs    0 junk    0
+-cov 30                    thr   4 contigs    3 longest  15766 N50 15766 fraction   99.92% identity 100.0000% diffs    0 junk    0
+-cov 40                    thr   4 contigs    1 longest  29883 N50 29883 fraction   99.93% identity 100.0000% diffs    0 junk    0
+-cov 5                     thr   2 contigs  353 longest    511 N50   119 fraction   91.44% identity  99.9908% diffs    3 junk    4
+-k 21                      thr   3 contigs    8 longest  16486 N50 16486 fraction   99.94% identity  99.9933% diffs    2 junk    1
+-k 15                      thr   4 contigs   13 longest  11749 N50  5481 fraction   71.59% identity  76.9123% diffs 6930 junk    0
+-min 2                     thr   2 contigs  150 longest   6222 N50  1873 fraction   99.98% identity  99.9320% diffs   21 junk  128
+-err 0.03                  thr   3 contigs  426 longest    785 N50   152 fraction   99.42% identity  99.9949% diffs    2 junk   12
+-err 0.03 -cov 40          thr   4 contigs   45 longest   3070 N50  1260 fraction   99.75% identity 100.0000% diffs    0 junk    1
+-seed 1                    thr   3 contigs   12 longest  10406 N50  6475 fraction   99.97% identity 100.0000% diffs    0 junk    1
+-seed 2                    thr   3 contigs   12 longest  10287 N50  5352 fraction   99.89% identity 100.0000% diffs    0 junk    0
+-seed 3                    thr   3 contigs   14 longest   6928 N50  4699 fraction   99.92% identity 100.0000% diffs    0 junk    2
+-seed 4                    thr   3 contigs   19 longest   5282 N50  3087 fraction   99.95% identity 100.0000% diffs    0 junk    1
+-seed 5                    thr   3 contigs    9 longest  10195 N50  5596 fraction   99.83% identity 100.0000% diffs    0 junk    2

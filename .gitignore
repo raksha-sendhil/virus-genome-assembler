@@ -1,0 +1,14 @@
+# compiled program
+assembler
+*.exe
+*.out
+
+# written by every run
+/fragments.txt
+/contigs.fasta
+
+# real fragment files are 60-100 MB each; download them with get_sample.sh
+data/real/*.fastq
+
+# local editor / Claude Code settings
+.claude/

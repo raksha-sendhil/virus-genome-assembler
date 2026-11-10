@@ -1,0 +1,12 @@
+ERR4204399 -min 10   contigs  498 longest   1537 N50   266 fraction  100.00% identity  99.1333% diffs  328 junk  341
+ERR4204399 -min 20   contigs  206 longest   2457 N50   571 fraction  100.00% identity  99.4838% diffs  175 junk  126
+ERR4204399 -min 30   contigs   89 longest   5504 N50  2326 fraction   99.99% identity  99.8618% diffs   43 junk   63
+ERR4204399 -min 60   contigs   28 longest   7546 N50  5405 fraction   99.96% identity  99.8587% diffs   43 junk   12
+ERR4204399 -min 100  contigs   18 longest  13816 N50  4696 fraction   99.69% identity  99.9533% diffs   14 junk    8
+ERR4204399 -min 200  contigs   64 longest   2953 N50  1610 fraction   98.71% identity  99.9836% diffs    5 junk    2
+ERR4239992 -min 10   contigs   72 longest   6032 N50  1760 fraction   99.76% identity  99.4750% diffs  161 junk   41
+ERR4239992 -min 20   contigs   27 longest   5940 N50  3360 fraction   96.66% identity  98.4036% diffs  478 junk    5
+ERR4239992 -min 30   contigs   24 longest   6094 N50  4500 fraction   93.39% identity  97.1444% diffs  838 junk    5
+ERR4239992 -min 60   contigs   33 longest   4484 N50  2865 fraction   96.24% identity  99.9445% diffs   16 junk    1
+ERR4239992 -min 100  contigs   45 longest   3979 N50  1609 fraction   92.89% identity 100.0000% diffs    0 junk    2
+ERR4239992 -min 200  contigs   68 longest   2964 N50  1009 fraction   85.32% identity 100.0000% diffs    0 junk    1
